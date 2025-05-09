@@ -302,7 +302,7 @@ applyFiltersButton.addEventListener('click', () => {
         if (matchesCategory && matchesPrice) {
             card.parentElement.style.display = 'block';
         } else {
-            card.parentElement.style.display = 'none'; 
+            card.parentElement.style.display = 'none';
         }
     });
 });
@@ -322,127 +322,50 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-//-------------------Offers Section JS-------------------------
+
+
+//-------------------Shopping Cart JS-------------------------
 document.addEventListener("DOMContentLoaded", () => {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
     const cartCountElement = document.getElementById("cart-count");
 
+    // SUM of Quantities in Cart {to make multiple product increase its count and not added again}
     const updateCartCount = () => {
-        const count = cartItems.length;
-        if (count > 0) {
-            cartCountElement.textContent = count;
-            cartCountElement.style.display = "inline";
-        } else {
-            cartCountElement.style.display = "none";
+        const totalItems = cartItems.reduce((total, item) => {
+            return total + (item.quantity || 1); // Handles missing quantity
+        }, 0);
+        if (cartCountElement) {
+            if (totalItems > 0) {
+                cartCountElement.textContent = totalItems;
+                cartCountElement.style.display = "inline";
+            } else {
+                cartCountElement.style.display = "none";
+            }
         }
     };
 
+    // Initialize Cart Count
     updateCartCount();
 
     document.querySelectorAll(".add-to-cart").forEach(button => {
         button.addEventListener("click", () => {
-            const card = button.closest(".offer-wrapper");
+            // Find the closest product wrapper (works for all sections)
+            const card = button.closest(".offer-wrapper, .playstations-wrapper, .Xbox-wrapper, .nintendo-switch-wrapper");
             const name = card.querySelector(".Name").innerText.trim();
             const price = card.querySelector(".price").innerText.trim();
-            const product = { name, price };
 
-            cartItems.push(product);
+            // Check if product exists
+            const existingIndex = cartItems.findIndex(item => item.name === name);
+            if (existingIndex !== -1) {
+                // Product exists → increment quantity
+                cartItems[existingIndex].quantity = (cartItems[existingIndex].quantity || 1) + 1;
+            } else {
+                // New product → add with quantity 1
+                cartItems.push({ name, price, quantity: 1 });
+            }
+
             localStorage.setItem("cart", JSON.stringify(cartItems));
-
-            updateCartCount();
-        });
-    });
-});
-//-------------------Playstation Section JS-------------------------
-document.addEventListener("DOMContentLoaded", () => {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    const cartCountElement = document.getElementById("cart-count");
-
-    const updateCartCount = () => {
-        const count = cartItems.length;
-        if (count > 0) {
-            cartCountElement.textContent = count;
-            cartCountElement.style.display = "inline";
-        } else {
-            cartCountElement.style.display = "none";
-        }
-    };
-
-    updateCartCount();
-
-    document.querySelectorAll(".add-to-cart").forEach(button => {
-        button.addEventListener("click", () => {
-            const card = button.closest(".playstations-wrapper");
-            const name = card.querySelector(".Name").innerText.trim();
-            const price = card.querySelector(".price").innerText.trim();
-            const product = { name, price };
-
-            cartItems.push(product);
-            localStorage.setItem("cart", JSON.stringify(cartItems));
-
-            updateCartCount();
-        });
-    });
-});
-//-------------------Xbox Section JS-------------------------
-document.addEventListener("DOMContentLoaded", () => {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    const cartCountElement = document.getElementById("cart-count");
-
-    const updateCartCount = () => {
-        const count = cartItems.length;
-        if (count > 0) {
-            cartCountElement.textContent = count;
-            cartCountElement.style.display = "inline";
-        } else {
-            cartCountElement.style.display = "none";
-        }
-    };
-
-    updateCartCount();
-
-    document.querySelectorAll(".add-to-cart").forEach(button => {
-        button.addEventListener("click", () => {
-            const card = button.closest(".Xbox-wrapper");
-            const name = card.querySelector(".Name").innerText.trim();
-            const price = card.querySelector(".price").innerText.trim();
-            const product = { name, price };
-
-            cartItems.push(product);
-            localStorage.setItem("cart", JSON.stringify(cartItems));
-
-            updateCartCount();
-        });
-    });
-});
-//-------------------Nintendo Section JS-------------------------
-document.addEventListener("DOMContentLoaded", () => {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    const cartCountElement = document.getElementById("cart-count");
-
-    const updateCartCount = () => {
-        const count = cartItems.length;
-        if (count > 0) {
-            cartCountElement.textContent = count;
-            cartCountElement.style.display = "inline";
-        } else {
-            cartCountElement.style.display = "none";
-        }
-    };
-
-    updateCartCount();
-
-    document.querySelectorAll(".add-to-cart").forEach(button => {
-        button.addEventListener("click", () => {
-            const card = button.closest(".nintendo-switch-wrapper");
-            const name = card.querySelector(".Name").innerText.trim();
-            const price = card.querySelector(".price").innerText.trim();
-            const product = { name, price };
-
-            cartItems.push(product);
-            localStorage.setItem("cart", JSON.stringify(cartItems));
-
-            updateCartCount();
+            updateCartCount(); // updates count
         });
     });
 });
