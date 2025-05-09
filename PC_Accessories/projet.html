@@ -31,8 +31,6 @@
   }
 }
 
-
-
     document.addEventListener("DOMContentLoaded", () => {
   const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
   const cartCountElement = document.getElementById("cart-count");
@@ -69,21 +67,62 @@
     });
   });
 });
-//-------------------Shopping Cart Page JS-------------------------
+
+
+
+    
+function setupSpecialOfferTimer() {
+    const offerTitle = document.querySelector('.main');
+    const timer = document.createElement('div');
+    timer.className = 'offer-timer';
+
+    // Offer ends in 5 minutes from now
+    const endDate = new Date();
+    endDate.setMinutes(endDate.getMinutes() + 5);
+
+    function updateTimer() {
+      const now = new Date();
+      const diff = endDate - now;
+
+      if (diff <= 0) {
+        timer.textContent = '⏰ The offer has ended!';
+        return;
+      }
+
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      timer.textContent = ` Hurry up! Offer ends in: ${minutes}m ${seconds}s`;
+    }
+
+    offerTitle.appendChild(timer);
+    updateTimer();
+    setInterval(updateTimer, 1000);
+  }
+
+  document.addEventListener("DOMContentLoaded", setupSpecialOfferTimer);
+
+  
+//-------------------Shopping Cart JS-------------------------
 document.addEventListener("DOMContentLoaded", () => {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
     const cartCountElement = document.getElementById("cart-counter");
 
+    //  SUM of Quantities in Cart {to make multiple product increase its count and not added again}
     const updateCartCount = () => {
-        const count = cartItems.length;
-        if (count > 0) {
-            cartCountElement.textContent = count;
-            cartCountElement.style.display = "inline";
-        } else {
-            cartCountElement.style.display = "none";
+        const totalItems = cartItems.reduce((total, item) => {
+            return total + (item.quantity || 1); // Handles missing quantity
+        }, 0);
+        if (cartCountElement) {
+            if (totalItems > 0) {
+                cartCountElement.textContent = totalItems;
+                cartCountElement.style.display = "inline";
+            } else {
+                cartCountElement.style.display = "none";
+            }
         }
     };
-
+    // Initialize Cart Count
     updateCartCount();
 
     document.querySelectorAll(".cart").forEach(button => {
@@ -91,12 +130,18 @@ document.addEventListener("DOMContentLoaded", () => {
             const card = button.closest(".product");
             const name = card.querySelector(".name").innerText.trim();
             const price = card.querySelector(".price").innerText.trim();
-            const product = { name, price };
+            // Check if product exists
+            const existingIndex = cartItems.findIndex(item => item.name === name);
+            if (existingIndex !== -1) {
+                // Product exists → increment quantity
+                cartItems[existingIndex].quantity = (cartItems[existingIndex].quantity || 1) + 1;
+            } else {
+                // New product → add with quantity 1
+                cartItems.push({ name, price, quantity: 1 });
+            }
 
-            cartItems.push(product);
             localStorage.setItem("cart", JSON.stringify(cartItems));
-
-            updateCartCount();
+            updateCartCount(); // updates count
         });
     });
 });
