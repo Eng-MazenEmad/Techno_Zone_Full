@@ -10,7 +10,6 @@
 }
 
 body {
-    /* background-image: linear-gradient(#002855, #080808); */
     background-color: #001845;
 }
 
@@ -511,20 +510,20 @@ iframe {
 
 .frame-shadow-one {
     position: absolute;
-    width: 9.5%;
-    height: 30%;
+    width: 10%;
+    height: 90%;
     border-radius: 60px;
     background: transparent;
     z-index: -1;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-    transform: translate(461px, 19px);
+    transform: translate(460px, 19px);
     border: 2px solid #ffffff;
 }
 
 .frame-shadow-two {
     position: absolute;
-    width: 9.5%;
-    height: 30%;
+    width: 10%;
+    height: 65%;
     border-radius: 60px;
     background: transparent;
     z-index: -1;
@@ -535,8 +534,8 @@ iframe {
 
 .frame-shadow-three {
     position: absolute;
-    width: 9.5%;
-    height: 30%;
+    width: 10%;
+    height: 90%;
     border-radius: 60px;
     background: transparent;
     z-index: -1;
@@ -547,8 +546,8 @@ iframe {
 
 .frame-shadow-four {
     position: absolute;
-    width: 9.5%;
-    height: 30%;
+    width: 10%;
+    height: 65%;
     border-radius: 60px;
     background: transparent;
     z-index: -1;
@@ -559,8 +558,8 @@ iframe {
 
 .frame-shadow-five {
     position: absolute;
-    width: 9.5%;
-    height: 30%;
+    width: 10%;
+    height: 90%;
     border-radius: 60px;
     background: transparent;
     z-index: -1;
@@ -571,8 +570,8 @@ iframe {
 
 .frame-shadow-six {
     position: absolute;
-    width: 9.5%;
-    height: 30%;
+    width: 10%;
+    height: 65%;
     border-radius: 60px;
     background: transparent;
     z-index: -1;
@@ -583,8 +582,8 @@ iframe {
 
 .frame-shadow-seven {
     position: absolute;
-    width: 9.5%;
-    height: 30%;
+    width: 10%;
+    height: 90%;
     border-radius: 60px;
     background: transparent;
     z-index: -1;
@@ -595,8 +594,8 @@ iframe {
 
 .frame-shadow-eight {
     position: absolute;
-    width: 9.5%;
-    height: 30%;
+    width: 10%;
+    height: 65%;
     border-radius: 60px;
     background: transparent;
     z-index: -1;
@@ -607,8 +606,8 @@ iframe {
 
 .frame-shadow-nine {
     position: absolute;
-    width: 9.5%;
-    height: 30%;
+    width: 10%;
+    height: 90%;
     border-radius: 60px;
     background: transparent;
     z-index: -1;
@@ -688,9 +687,20 @@ iframe {
 
 .profile-container.reverse .profile-item {
     flex-direction: row-reverse;
-    /* margin-bottom: 100px; */
+    margin-bottom: 100px;
 }
 
+.profile-container {
+    opacity: 0;
+    transform: translateY(50px);
+    transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    will-change: opacity, transform;
+}
+
+.profile-container.animate {
+    opacity: 1;
+    transform: translateY(0);
+}
 
 /* ------------footer styling-------------- */
 
