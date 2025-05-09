@@ -47,7 +47,7 @@ nav a {
     font-size: 17px;
     color: #0088ff;
     text-align: center;
-    padding: 27px;
+    padding: 29.8px;
     text-decoration: none;
     transition: all 0.3s ease;
 }
@@ -68,7 +68,7 @@ nav a {
     border: none;
     outline: none;
     color: #0088ff;
-    padding: 28px;
+    padding: 29.8px;
     background-color: transparent;
 }
 
@@ -94,7 +94,7 @@ nav a:hover,
     text-decoration: none;
     display: block;
     text-align: left;
-    width: 175px;
+    width: 178px;
     padding: 20px 20px;
 
 }
