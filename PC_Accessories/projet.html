@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="Techno_Zone ICON.svg" />
 </head>
 <body>
-  <script>
+<script>
   let cartCount = 0;
 
   function addToCart(event) {
@@ -76,20 +76,32 @@ function setupSpecialOfferTimer() {
   const endDate = new Date();
   endDate.setSeconds(endDate.getSeconds() + 10);
 
-  function updateTimer() {
-    const now = new Date();
-    const diff = endDate - now;
+  let pricesUpdated = false; // Flag to track if we've already updated prices
 
-    if (diff <= 0) {
-      timer.textContent = '⏰ The offer has ended!';
-      return;
+function updateTimer() {
+  const now = new Date();
+  const diff = endDate - now;
+
+  if (diff <= 0) {
+    timer.textContent = '⏰ The offer has ended!';
+    
+    // Only update prices once
+    if (!pricesUpdated) {
+      document.querySelectorAll('.price').forEach(priceElement => {
+        const currentPrice = parseInt(priceElement.textContent.replace(' EGP', '').replace(',', ''));
+        const newPrice = currentPrice + 500;
+        priceElement.textContent = `${newPrice} EGP`;
+      });
+      pricesUpdated = true; // Mark as updated
     }
-
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-
-    timer.textContent = ` Hurry up! Offer ends in: ${minutes}m ${seconds}s`;
+    return;
   }
+
+  // Countdown display
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  timer.textContent = `Hurry up! Offer ends in: ${minutes}m ${seconds}s`;
+}
 
   offerTitle.appendChild(timer);
   updateTimer();
@@ -140,6 +152,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+
 </script>
 
 
