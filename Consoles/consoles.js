@@ -155,27 +155,20 @@ cartItemsContainer.addEventListener('click', (event) => {
 
 
 const applyFiltersButton = document.querySelector('.apply-filters');
-const categoryCheckboxes = document.querySelectorAll('.filter-item input[type="checkbox"]');
 const priceFromInput = document.getElementById('price-from');
 const priceToInput = document.getElementById('price-to');
 const productCards = document.querySelectorAll('.product-card');
 
 applyFiltersButton.addEventListener('click', () => {
-    const selectedCategories = Array.from(categoryCheckboxes)
-        .filter(checkbox => checkbox.checked)
-        .map(checkbox => checkbox.value);
-
     const priceFrom = parseFloat(priceFromInput.value) || 0;
     const priceTo = parseFloat(priceToInput.value) || Infinity;
 
     productCards.forEach(card => {
-        const productCategory = card.querySelector('h3').textContent.toLowerCase();
         const productPrice = parseFloat(card.querySelector('.price').textContent.replace('EGP', '').trim());
 
-        const matchesCategory = selectedCategories.length === 0 || selectedCategories.some(category => productCategory.includes(category.toLowerCase()));
         const matchesPrice = productPrice >= priceFrom && productPrice <= priceTo;
 
-        if (matchesCategory && matchesPrice) {
+        if (matchesPrice) {
             card.parentElement.style.display = 'block';
         } else {
             card.parentElement.style.display = 'none';
@@ -197,7 +190,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
-
 
 //-------------------Shopping Cart JS-------------------------
 document.addEventListener("DOMContentLoaded", () => {
