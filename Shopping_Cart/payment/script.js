@@ -27,7 +27,9 @@ document.addEventListener("DOMContentLoaded", function () {
       if (Array.isArray(parsedCart)) {
         cartItems = parsedCart;
       } else {
-        console.warn("Stored cart data was not an array. Initializing to empty cart.");
+        console.warn(
+          "Stored cart data was not an array. Initializing to empty cart."
+        );
         cartItems = [];
       }
     }
@@ -35,7 +37,6 @@ document.addEventListener("DOMContentLoaded", function () {
     console.error("Error parsing cart from localStorage on init:", error);
     cartItems = []; // Default to empty cart on error
   }
-
 
   function savePaymentDetails() {
     const details = {};
@@ -49,16 +50,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function loadPaymentDetails() {
     try {
-      const savedDetails = JSON.parse(localStorage.getItem(PAYMENT_DETAILS_KEY));
+      const savedDetails = JSON.parse(
+        localStorage.getItem(PAYMENT_DETAILS_KEY)
+      );
       if (savedDetails) {
         for (const key in savedDetails) {
-          if (paymentInputs[key] && typeof savedDetails[key] !== 'undefined') {
+          if (paymentInputs[key] && typeof savedDetails[key] !== "undefined") {
             paymentInputs[key].value = savedDetails[key];
           }
         }
       }
     } catch (error) {
-        console.error("Error loading payment details from localStorage:", error);
+      console.error("Error loading payment details from localStorage:", error);
     }
   }
 
@@ -70,7 +73,7 @@ document.addEventListener("DOMContentLoaded", function () {
     cartItemsListContainer.innerHTML = "";
 
     // Sanitize quantities in cartItems *before* rendering and calculating totals
-    cartItems.forEach(item => {
+    cartItems.forEach((item) => {
       const quantity = parseInt(item.quantity, 10);
       if (isNaN(quantity) || quantity < 1) {
         item.quantity = 1; // Default to 1 if not a valid positive number
@@ -95,17 +98,23 @@ document.addEventListener("DOMContentLoaded", function () {
           if (priceMatch && priceMatch[0]) {
             const parsedPrice = parseFloat(priceMatch[0]);
             if (!isNaN(parsedPrice)) {
-                itemPrice = parsedPrice;
+              itemPrice = parsedPrice;
             } else {
-                 console.warn(`Could not parse price (NaN) for item: "${item.name}". Original: "${item.price}"`);
+              console.warn(
+                `Could not parse price (NaN) for item: "${item.name}". Original: "${item.price}"`
+              );
             }
           } else {
-            console.warn(`Could not extract numeric part from price for item: "${item.name}". Original: "${item.price}"`);
+            console.warn(
+              `Could not extract numeric part from price for item: "${item.name}". Original: "${item.price}"`
+            );
           }
         } else if (typeof item.price === "number") {
           itemPrice = item.price;
         } else {
-          console.warn(`Price data missing or not a string/number for item: "${item.name}".`);
+          console.warn(
+            `Price data missing or not a string/number for item: "${item.name}".`
+          );
         }
 
         cartItemElement.innerHTML = `
@@ -138,7 +147,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     });
 
-    document.querySelectorAll(".cart-item .bx-plus-circle").forEach((button) => {
+    document
+      .querySelectorAll(".cart-item .bx-plus-circle")
+      .forEach((button) => {
         button.addEventListener("click", (e) => {
           const index = parseInt(e.target.dataset.index);
           // cartItems[index].quantity is already a number here due to displayCartItems sanitization
@@ -148,7 +159,9 @@ document.addEventListener("DOMContentLoaded", function () {
         });
       });
 
-    document.querySelectorAll(".cart-item .bx-minus-circle").forEach((button) => {
+    document
+      .querySelectorAll(".cart-item .bx-minus-circle")
+      .forEach((button) => {
         button.addEventListener("click", (e) => {
           const index = parseInt(e.target.dataset.index);
           if (cartItems[index].quantity > 1) {
@@ -162,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function updateTotals() {
     let subtotal = 0;
-    const TAX_RATE = 0.14; // Ensure HTML label matches this (e.g., "Tax (14%)")
+    const TAX_RATE = 0.12; //  HTML label matches 
 
     cartItems.forEach((item) => {
       let price = 0;
@@ -174,15 +187,21 @@ document.addEventListener("DOMContentLoaded", function () {
           if (!isNaN(parsed)) {
             price = parsed;
           } else {
-            console.warn(`Could not parse price (NaN) for total calculation for item: "${item.name}". Original: "${item.price}"`);
+            console.warn(
+              `Could not parse price (NaN) for total calculation for item: "${item.name}". Original: "${item.price}"`
+            );
           }
         } else {
-          console.warn(`Could not extract numeric part from price for total calculation for item: "${item.name}". Original: "${item.price}"`);
+          console.warn(
+            `Could not extract numeric part from price for total calculation for item: "${item.name}". Original: "${item.price}"`
+          );
         }
       } else if (typeof item.price === "number") {
         price = item.price;
       } else {
-        console.warn(`Price data missing or not a string/number for total calculation for item: "${item.name}".`);
+        console.warn(
+          `Price data missing or not a string/number for total calculation for item: "${item.name}".`
+        );
       }
 
       // item.quantity is guaranteed to be a number >= 1 by displayCartItems
@@ -204,12 +223,16 @@ document.addEventListener("DOMContentLoaded", function () {
       // value should be a number here. If it became NaN, toFixed will produce "NaN"
       element.textContent = `${value.toFixed(2)} EGP`;
     } else {
-        console.warn(`Element with selector "${selector}" not found for updating display.`);
+      console.warn(
+        `Element with selector "${selector}" not found for updating display.`
+      );
     }
   }
 
   function showEmptyCartMessage() {
-    const existingMessage = cartItemsListContainer.querySelector(".empty-cart-message");
+    const existingMessage = cartItemsListContainer.querySelector(
+      ".empty-cart-message"
+    );
     if (existingMessage) existingMessage.remove();
     const emptyMessage = document.createElement("div");
     emptyMessage.className = "empty-cart-message";
@@ -220,7 +243,10 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateCartCount() {
     const cartCountElement = document.getElementById("cart-count");
     if (cartCountElement) {
-      const count = cartItems.reduce((acc, item) => acc + (item.quantity || 0), 0);
+      const count = cartItems.reduce(
+        (acc, item) => acc + (item.quantity || 0),
+        0
+      );
       if (count > 0) {
         cartCountElement.textContent = count;
         cartCountElement.style.display = "inline";
@@ -231,11 +257,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   if (returnBtn) {
-    returnBtn.addEventListener("click", function() {
+    returnBtn.addEventListener("click", function () {
       if (window.history.length > 1) {
         window.history.back();
       } else {
-        window.location.href = "project_IT.html"; // Fallback page
+        window.location.href = "../Home Page/Home Page.html"; // Fallback page
       }
     });
   }
@@ -260,7 +286,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (cartItems.length === 0) {
         if (paymentErrorMessage) {
-          paymentErrorMessage.textContent = "Your cart is empty. Please add items before checkout.";
+          paymentErrorMessage.textContent =
+            "Your cart is empty. Please add items before checkout.";
           paymentErrorMessage.style.display = "block";
         } else {
           alert("Your cart is empty. Please add items before checkout.");
@@ -268,28 +295,31 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      const requiredInputs = document.querySelectorAll(".payment-wrapper input[required]");
+      const requiredInputs = document.querySelectorAll(
+        ".payment-wrapper input[required]"
+      );
       let isValid = true;
       let firstInvalidField = null;
       requiredInputs.forEach((input) => {
         if (!input.checkValidity()) {
-            input.style.borderColor = "red";
-            isValid = false;
-            if (input.validity.patternMismatch && input.title) {
-              console.log(`Pattern mismatch for ${input.id}: ${input.title}`);
-            }
-            if (!firstInvalidField) firstInvalidField = input;
+          input.style.borderColor = "red";
+          isValid = false;
+          if (input.validity.patternMismatch && input.title) {
+            console.log(`Pattern mismatch for ${input.id}: ${input.title}`);
+          }
+          if (!firstInvalidField) firstInvalidField = input;
         } else {
-            input.style.borderColor = "";
+          input.style.borderColor = "";
         }
       });
 
       if (!isValid) {
         if (paymentErrorMessage) {
-            paymentErrorMessage.textContent = "Please fill out all required fields correctly.";
-            paymentErrorMessage.style.display = "block";
+          paymentErrorMessage.textContent =
+            "Please fill out all required fields correctly.";
+          paymentErrorMessage.style.display = "block";
         } else {
-            alert("Please fill out all required fields correctly.");
+          alert("Please fill out all required fields correctly.");
         }
         if (firstInvalidField) firstInvalidField.focus();
         return;
@@ -306,7 +336,11 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Input field restrictions (no changes here from your original provided code)
-  function restrictToNumeric(inputElement, regexPatternToRemove, maxLength = null) {
+  function restrictToNumeric(
+    inputElement,
+    regexPatternToRemove,
+    maxLength = null
+  ) {
     if (inputElement) {
       inputElement.addEventListener("input", function (event) {
         let value = event.target.value;
@@ -326,7 +360,9 @@ document.addEventListener("DOMContentLoaded", function () {
         const limitedDigits = digitsOnly.slice(0, 16);
         let formattedValue = "";
         for (let i = 0; i < limitedDigits.length; i++) {
-          if (i > 0 && i % 4 === 0) { formattedValue += " "; }
+          if (i > 0 && i % 4 === 0) {
+            formattedValue += " ";
+          }
           formattedValue += limitedDigits[i];
         }
         event.target.value = formattedValue;
@@ -349,7 +385,12 @@ document.addEventListener("DOMContentLoaded", function () {
         monthPart = monthPart.substring(0, 2);
       }
       formattedValue = monthPart;
-      if (monthPart.length === 2 && !digitsAndSlashOnly.includes("/") && event.inputType !== "deleteContentBackward" && event.inputType !== "deleteContentForward") {
+      if (
+        monthPart.length === 2 &&
+        !digitsAndSlashOnly.includes("/") &&
+        event.inputType !== "deleteContentBackward" &&
+        event.inputType !== "deleteContentForward"
+      ) {
         if (digitsAndSlashOnly.length > 2 || yearPart.length > 0) {
           formattedValue += "/";
         }
@@ -357,9 +398,13 @@ document.addEventListener("DOMContentLoaded", function () {
         formattedValue += "/";
       }
       yearPart = yearPart.replace(/\//g, "");
-      if (yearPart.length > 2) { yearPart = yearPart.substring(0, 2); }
+      if (yearPart.length > 2) {
+        yearPart = yearPart.substring(0, 2);
+      }
       formattedValue += yearPart;
-      if (formattedValue.length > 5) { formattedValue = formattedValue.slice(0, 5); }
+      if (formattedValue.length > 5) {
+        formattedValue = formattedValue.slice(0, 5);
+      }
       event.target.value = formattedValue;
     });
   }
@@ -374,7 +419,10 @@ document.addEventListener("DOMContentLoaded", function () {
           if (Array.isArray(parsedData)) {
             newCartData = parsedData;
           } else {
-            console.warn("Cart data from storage event was not an array:", parsedData);
+            console.warn(
+              "Cart data from storage event was not an array:",
+              parsedData
+            );
           }
         }
       } catch (e) {
@@ -385,24 +433,27 @@ document.addEventListener("DOMContentLoaded", function () {
       updateCartCount();
     }
     if (event.key === PAYMENT_DETAILS_KEY && cartItems.length > 0) {
-       loadPaymentDetails();
+      loadPaymentDetails();
     }
   });
 
   window.addEventListener("focus", function () {
     let currentCartFromStorage = [];
     try {
-        const storedCart = localStorage.getItem("cart");
-        if (storedCart) {
-            const parsedData = JSON.parse(storedCart);
-            if (Array.isArray(parsedData)) {
-                currentCartFromStorage = parsedData;
-            } else {
-                console.warn("Cart data from storage on focus was not an array:", parsedData);
-            }
+      const storedCart = localStorage.getItem("cart");
+      if (storedCart) {
+        const parsedData = JSON.parse(storedCart);
+        if (Array.isArray(parsedData)) {
+          currentCartFromStorage = parsedData;
+        } else {
+          console.warn(
+            "Cart data from storage on focus was not an array:",
+            parsedData
+          );
         }
+      }
     } catch (e) {
-        console.error("Error parsing cart data from storage on focus:", e);
+      console.error("Error parsing cart data from storage on focus:", e);
     }
 
     if (JSON.stringify(cartItems) !== JSON.stringify(currentCartFromStorage)) {
@@ -411,7 +462,7 @@ document.addEventListener("DOMContentLoaded", function () {
       updateCartCount();
     }
     if (cartItems.length > 0) {
-       loadPaymentDetails();
+      loadPaymentDetails();
     }
   });
 
@@ -419,6 +470,6 @@ document.addEventListener("DOMContentLoaded", function () {
   if (cartItems.length > 0) {
     loadPaymentDetails(); // Load payment details if cart is not empty
   }
-  displayCartItems(); // Initial display, will sanitize quantities and calculate totals
+  displayCartItems(); // Initial display
   updateCartCount();
 });
