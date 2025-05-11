@@ -1,4 +1,3 @@
-// --- Global State & Selectors ---
 const openCartButton = document.querySelector('.open-cart');
 const closeCartButton = document.querySelector('.close-cart');
 const sidebarCart = document.querySelector('.sidebar-cart');
@@ -6,20 +5,15 @@ const cartItemsContainer = document.querySelector('.cart-items');
 const notification = document.querySelector('.notification');
 const clearCartButton = document.querySelector('.clear-cart');
 const addToCartButtons = document.querySelectorAll('.add-to-cart');
-const cardButtons = document.querySelectorAll('.card-buttons'); // For product page quantity selectors
-
-// Selector for the main empty cart message (targets your HTML structure)
+const cardButtons = document.querySelectorAll('.card-buttons');
 const mainEmptyCartMessageElement = document.querySelector('.empty-cart-message');
-
 const applyFiltersButton = document.querySelector('.apply-filters');
 const priceFromInput = document.getElementById('price-from');
 const priceToInput = document.getElementById('price-to');
-const productCards = document.querySelectorAll('.product-card'); // Used by filters
+const productCards = document.querySelectorAll('.product-card');
 
-// Initialize cart from localStorage
 let currentCartItems = JSON.parse(localStorage.getItem('cart')) || [];
 
-// --- Helper Functions ---
 function saveCartToLocalStorage() {
     localStorage.setItem('cart', JSON.stringify(currentCartItems));
 }
@@ -37,17 +31,14 @@ function showNotification(message) {
 function updateNotificationCircle() {
     const totalDistinctItems = currentCartItems.length;
     const totalQuantity = currentCartItems.reduce((sum, item) => sum + (item.quantity || 0), 0);
+    const notificationCircleElement = document.querySelector('.notification-circle');
+    const globalCartCountElement = document.getElementById("cart-count");
 
-    const notificationCircleElement = document.querySelector('.notification-circle'); // For sidebar cart badge
-    const globalCartCountElement = document.getElementById("cart-count"); // For global header count
-
-    // Update sidebar notification circle (displays number of distinct item types)
     if (notificationCircleElement) {
         notificationCircleElement.style.display = totalDistinctItems > 0 ? 'flex' : 'none';
         notificationCircleElement.textContent = totalDistinctItems > 10 ? '+10' : totalDistinctItems.toString();
     }
     
-    // Update global cart count (displays total quantity of all items)
     if (globalCartCountElement) {
         if (totalQuantity > 0) {
             globalCartCountElement.textContent = totalQuantity.toString();
@@ -61,25 +52,21 @@ function updateNotificationCircle() {
 function replaceAll() {
     if (!cartItemsContainer) return;
 
-    // 1. Remove only the dynamically added product items (.cart-item)
     const existingProductItems = cartItemsContainer.querySelectorAll('.cart-item');
     existingProductItems.forEach(item => item.remove());
 
     if (currentCartItems.length === 0) {
-        // Cart is empty: show the main empty cart message
         if (mainEmptyCartMessageElement) {
-            mainEmptyCartMessageElement.style.display = 'flex'; // Your CSS uses flex
+            mainEmptyCartMessageElement.style.display = 'flex';
         }
     } else {
-        // Cart has items: hide the main empty cart message and render items
         if (mainEmptyCartMessageElement) {
             mainEmptyCartMessageElement.style.display = 'none';
         }
 
         currentCartItems.forEach(item => {
             const priceNumber = typeof item.price === 'number' ? item.price : parseFloat(String(item.price).replace(/[^\d.-]/g, '')) || 0;
-            const itemImage = item.image || 'images/default_product.png'; // Provide a real default image path
-
+            const itemImage = item.image || 'images/default_product.png';
             const cartItemElement = document.createElement('div');
             cartItemElement.classList.add('cart-item');
             cartItemElement.dataset.name = item.name; 
@@ -102,12 +89,9 @@ function replaceAll() {
             cartItemsContainer.appendChild(cartItemElement);
         });
     }
-    updateNotificationCircle(); // Update all counts and indicators after rendering
+    updateNotificationCircle();
 }
 
-// --- Event Listeners ---
-
-// Sidebar Toggle
 if (openCartButton && closeCartButton && sidebarCart) {
     openCartButton.addEventListener('click', () => {
         if (sidebarCart.classList.contains('open')) {
@@ -127,7 +111,6 @@ if (openCartButton && closeCartButton && sidebarCart) {
     });
 }
 
-// Clear Cart Button
 if (clearCartButton) {
     clearCartButton.addEventListener('click', () => {
         currentCartItems = [];
@@ -137,7 +120,6 @@ if (clearCartButton) {
     });
 }
 
-// Product Card Quantity Pickers
 cardButtons.forEach((buttons) => {
     const decrementButton = buttons.querySelector('.decrement');
     const incrementButton = buttons.querySelector('.increment');
@@ -159,7 +141,6 @@ cardButtons.forEach((buttons) => {
     }
 });
 
-// Add to Cart Buttons on Product Listings
 addToCartButtons.forEach((button) => {
     button.addEventListener('click', (event) => {
         const productCard = event.target.closest('.offer-wrapper, .playstations-wrapper, .nintendo-switch-wrapper, .Xbox-wrapper');
@@ -178,11 +159,9 @@ addToCartButtons.forEach((button) => {
 
         const productName = nameElement.textContent.trim();
         const productPriceText = priceElement.textContent;
-        const productImage = imageElement ? imageElement.src : 'images/default_product.png'; // Default image
+        const productImage = imageElement ? imageElement.src : 'images/default_product.png';
         const quantityToAdd = quantitySelectorOnCard ? parseInt(quantitySelectorOnCard.textContent) : 1;
-
         const productPriceNumeric = parseFloat(productPriceText.replace(/[^\d.-]/g, '')) || 0;
-
         const existingItemIndex = currentCartItems.findIndex(item => item.name === productName);
 
         if (existingItemIndex > -1) {
@@ -206,7 +185,6 @@ addToCartButtons.forEach((button) => {
     });
 });
 
-// Sidebar Cart Item Interactions
 if (cartItemsContainer) {
     cartItemsContainer.addEventListener('click', (event) => {
         const target = event.target;
@@ -249,7 +227,6 @@ if (cartItemsContainer) {
     });
 }
 
-// Filters Logic
 if (applyFiltersButton && priceFromInput && priceToInput && productCards.length > 0) {
     applyFiltersButton.addEventListener('click', () => {
         const priceFrom = parseFloat(priceFromInput.value) || 0;
@@ -279,10 +256,7 @@ if (applyFiltersButton && priceFromInput && priceToInput && productCards.length 
     });
 }
 
-
-// --- DOMContentLoaded for remaining initializations ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Toggle Filters Sidebar
     const toggleFiltersButton = document.querySelector('.toggle-filters');
     const filterSidebarElement = document.querySelector('.sidebar'); 
 
@@ -290,12 +264,11 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleFiltersButton.addEventListener('click', () => {
             filterSidebarElement.classList.toggle('active');
             if (filterSidebarElement.classList.contains('active')) {
-                toggleFiltersButton.style.left = '100px';
+                toggleFiltersButton.style.left = '310px';
             } else {
-                toggleFiltersButton.style.left = '1000px';
+                toggleFiltersButton.style.left = '10px';
             }
         });
     }
-    
     replaceAll(); 
 });
